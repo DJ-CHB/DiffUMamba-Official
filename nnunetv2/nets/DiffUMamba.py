@@ -464,13 +464,11 @@ class DiffUMamba(nn.Module):
         self.conv3d_4 = nn.Conv3d(in_channels=features_per_stage[3], out_channels=self.channels, kernel_size=1)
         self.conv3d_5 = nn.Conv3d(in_channels=features_per_stage[4], out_channels=self.channels, kernel_size=1)
 
-        self.lambda_init = torch.tensor(0.5)
-
-        self.lambda_1 = nn.Parameter(self.lambda_init)
-        self.lambda_2 = nn.Parameter(self.lambda_init)
-        self.lambda_3 = nn.Parameter(self.lambda_init)
-        self.lambda_4 = nn.Parameter(self.lambda_init)
-        self.lambda_5 = nn.Parameter(self.lambda_init)
+        self.lambda_1 = nn.Parameter(torch.tensor(0.5))
+        self.lambda_2 = nn.Parameter(torch.tensor(0.5))
+        self.lambda_3 = nn.Parameter(torch.tensor(0.5))
+        self.lambda_4 = nn.Parameter(torch.tensor(0.5))
+        self.lambda_5 = nn.Parameter(torch.tensor(0.5))
 
         self.relu = nn.ReLU()
 
@@ -515,7 +513,6 @@ class DiffUMamba(nn.Module):
 
         # Filtering out of latent noise
         m_hat = m_1 - m_2 
-
 
         # Replacing the bottleneck features with the output from NRM module
         skips[-1] = m_hat 
