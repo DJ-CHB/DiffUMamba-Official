@@ -457,56 +457,37 @@ class DiffUMamba(nn.Module):
 
         self.channels = features_per_stage[-1]
 
+        self.proj_convs = nn.ModuleList([
+            nn.Conv3d(features_per_stage[i], self.channels, kernel_size=1) for i in range(n_stages - 1)])
 
-        self.conv3d_1 = nn.Conv3d(in_channels=features_per_stage[0], out_channels=self.channels, kernel_size=1)
-        self.conv3d_2 = nn.Conv3d(in_channels=features_per_stage[1], out_channels=self.channels, kernel_size=1)
-        self.conv3d_3 = nn.Conv3d(in_channels=features_per_stage[2], out_channels=self.channels, kernel_size=1)
-        self.conv3d_4 = nn.Conv3d(in_channels=features_per_stage[3], out_channels=self.channels, kernel_size=1)
-        self.conv3d_5 = nn.Conv3d(in_channels=features_per_stage[4], out_channels=self.channels, kernel_size=1)
-
-        self.lambda_1 = nn.Parameter(torch.tensor(0.5))
-        self.lambda_2 = nn.Parameter(torch.tensor(0.5))
-        self.lambda_3 = nn.Parameter(torch.tensor(0.5))
-        self.lambda_4 = nn.Parameter(torch.tensor(0.5))
-        self.lambda_5 = nn.Parameter(torch.tensor(0.5))
+        self.lambdas = nn.Parameter(torch.full((n_stages - 1,), 0.5, dtype=torch.float32))
 
         self.relu = nn.ReLU()
 
     def forward(self, x):
         skips = self.encoder(x)
         
-        # Downsampling Blocks with detach to stop the gradients to flow directly to the main encoder. 
-
-        conv1 = self.conv3d_1(skips[0].detach())   
-        conv1 = self.relu(conv1) 
-
-        conv2 = self.conv3d_2(skips[1].detach())
-        conv2 = self.relu(conv2) 
-
-        conv3 = self.conv3d_3(skips[2].detach())
-        conv3 = self.relu(conv3) 
-
-        conv4 = self.conv3d_4(skips[3].detach())
-        conv4 = self.relu(conv4) 
-
-        conv5 = self.conv3d_5(skips[4].detach())
-        conv5 = self.relu(conv5) 
+        # Downsampling Blocks with detach to stop the gradients to flow directly to the main encoder.
+        convs=[]
+        for i, conv in enumerate(self.proj_convs):
+            conv_out = conv(skips[i].detach())
+            conv_out = self.relu(conv_out)
+            convs.append(conv_out)
 
         target_size = skips[-1].shape[2:]
         
-        # Adaptive pooling to obtain same bottleneck feature size. 
-        e1 = F.adaptive_avg_pool3d(conv1, target_size)
-        e2 = F.adaptive_avg_pool3d(conv2, target_size)
-        e3 = F.adaptive_avg_pool3d(conv3, target_size)
-        e4 = F.adaptive_avg_pool3d(conv4, target_size)
-        e5 = F.adaptive_avg_pool3d(conv5, target_size)
+        # Adaptive pooling to obtain same bottleneck feature size.
+        e_list = [F.adaptive_avg_pool3d(c, target_size) for c in convs]
+
 
        # M1 mamba block at the bottleneck 
         m_1 = self.mamba_m_1(skips[-1])
 
         # NRM module:
-        # Weighted average of e1-e5 
-        wt_avg = (self.lambda_1 * e1) + (self.lambda_2 * e2) + (self.lambda_3 * e3) + (self.lambda_4 * e4) + (self.lambda_5 * e5)
+        # Weighted average of e1-e5
+        wt_avg = sum(
+            w * e for w, e in zip(self.lambdas, e_list)
+        )
 
         # M2 mamba block for latent noise 
         m_2 = self.mamba_m_2(wt_avg)
