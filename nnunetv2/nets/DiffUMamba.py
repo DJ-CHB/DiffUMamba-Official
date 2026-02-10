@@ -469,8 +469,8 @@ class DiffUMamba(nn.Module):
         
         # Downsampling Blocks with detach to stop the gradients to flow directly to the main encoder.
         convs=[]
-        for i, conv in enumerate(self.proj_convs):
-            conv_out = conv(skips[i].detach())
+        for i, convolution in enumerate(self.proj_convs):
+            conv_out = convolution(skips[i].detach())
             conv_out = self.relu(conv_out)
             convs.append(conv_out)
 
