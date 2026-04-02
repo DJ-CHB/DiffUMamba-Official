@@ -43,27 +43,5 @@ nnUNetv2_predict -i INPUT_FOLDER -o OUTPUT_FOLDER -d DATASET_ID -c CONFIGURATION
 
 Please set the path variables `nnUNet_raw`, `nnUNet_preprocessed`, and `nnUNet_results` to your own paths.
 
-## Paper
 
-```
-https://arxiv.org/pdf/2507.18177
-```
-
-# Bibtex Citatiom
-
-@misc{diffumamba,
-      title={Differential-UMamba: Rethinking Tumor Segmentation Under Limited Data Scenarios}, 
-      author={Dhruv Jain and Romain Modzelewski and Romain Herault and Clement Chatelain and Eva Torfeh and Sebastien Thureau},
-      year={2025},
-      eprint={2507.18177},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2507.18177}, 
-}
-
-## Acknowledgements
-
-This work was supported by the MINMACS Région Normandie
-excellence label and ANR LabCom L-Lisa ANR-20-LCV1-0009. We thank our colleagues at CRIANN for providing us with the computational resources necessary for
-this project. 
 

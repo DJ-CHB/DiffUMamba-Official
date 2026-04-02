@@ -1,6 +1,6 @@
-# Differential UMamba 
+#  Differential UMamba: Rethinking tumor segmentation under limited data scenarios
 
-This is the official repository of Differential UMamba. It is accepted at miccai-25. The paper is available in [arxiv](). 
+This is the official repository of Differential UMamba. It is accepted at Biomedical Signal Processing and Control. The paper is available  [here](https://www.sciencedirect.com/science/article/pii/S1746809426007172). 
 
 
 * This repository is based on [UMamba_Bot](https://github.com/bowang-lab/U-Mamba).
@@ -20,24 +20,44 @@ This is the official repository of Differential UMamba. It is accepted at miccai
 
 <img src="./Images/nrm-imp.png" alt="NRM Importance" width="600">
 a. It illustrates the
-Pearson correlation between m1 and m2 in 1,280 patches from test set processed
-by the Diff-UMamba encoder. The results show low correlation
-between the two embedding types.
+L2 norm of m1 and m2 in 1,280 patches from test set processed
+by the Diff-UMamba encoder. 
 
 b. Diff-UMamba adapts more effectively than UMamba-Bot to noise injection. 
 
 ## Results 
 <img src="./Images/table-internal.png" alt="Internal Dataset" width="600">
 
-* The table shows the results on the internal dataset.
-* DiffUMamba outperforms state-of-the-art methods on the internal dataset.
+<img src="./Images/table-decathalon.png" alt="Decathlon" width="600"> 
 
 <img src="./Images/table-brats.png" alt="BRaTS-21" width="600">
 
-* The table shows the results on the BRaTS-21 dataset.
-* DiffUMamba outperforms state-of-the-art methods on the BRaTS-21 dataset with limited data setting i.e. 16\% and 32\% of the training data.
 
 ## Visual Comparison
 
-* The visual comparison of the segmentation results of DiffUMamba and UMamba-Bot on the internal/BraTS-21 dataset is shown below.
 <img src="./Images/visual-comp.png" alt="Visual Comparison" width="600">
+
+## Citation
+
+If you find this code useful for your research, please consider citing:
+
+``` 
+@article{jain2026differential_umamba,
+  title   = {Differential-UMamba: Rethinking tumor segmentation under limited data scenarios},
+  author  = {Jain, Dhruv and Modzelewski, Romain and Hérault, Romain and Chatelain, Clement and Torfeh, Eva and Thureau, Sebastien},
+  journal = {Biomedical Signal Processing and Control},
+  volume  = {120},
+  pages   = {110163},
+  year    = {2026},
+  issn    = {1746-8094},
+  doi     = {10.1016/j.bspc.2026.110163},
+  url     = {https://doi.org/10.1016/j.bspc.2026.110163}
+}
+```
+
+
+## Acknowledgements
+
+This work was supported by the MINMACS Région Normandie
+excellence label and ANR LabCom L-Lisa ANR-20-LCV1-0009. We thank our colleagues at CRIANN for providing us with the computational resources necessary for
+this project. 
